@@ -143,7 +143,7 @@ function Trip({ D, P }) {
     <>
       <div className="app">
         <header>
-          <p className="trip">스페인 여행(테스트) · 2027년 1월 11일 – 20일</p>
+          <p className="trip">스페인 여행 · 2027년 1월 11일 – 20일</p>
           <div className="head">
             <h1>{day.city}</h1>
             <div className="when">1월 {day.d}일 ({day.w})</div>
