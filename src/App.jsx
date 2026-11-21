@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useSchedule } from "./schedule.js";
 import { logOut, useAuth } from "./auth.js";
 import Login from "./components/Login.jsx";
+import FitTitle from "./components/FitTitle.jsx";
 import { CheckIcon, PenIcon, PlusIcon } from "./components/Icons.jsx";
 import MapCard from "./components/MapCard.jsx";
 import Timeline from "./components/Timeline.jsx";
@@ -145,7 +146,7 @@ function Trip({ D, P }) {
         <header>
           <p className="trip">스페인 여행 · 2027년 1월 11일 – 20일</p>
           <div className="head">
-            <h1>{day.city}</h1>
+            <FitTitle>{day.city}</FitTitle>
             <div className="when">1월 {day.d}일 ({day.w})</div>
           </div>
           <div className="days" role="tablist" aria-label="날짜 선택">
