@@ -4,7 +4,33 @@ import { K, du, fm, toMin } from "../utils.js";
 
 const KINDS = [["", "장소"], ...Object.entries(K)];
 
+/**
+ * 모바일에서 키보드가 올라와도 시트가 화면 안에 머물도록 보이는 영역(visualViewport)을 CSS 변수로 알려 준다.
+ * --vvh: 보이는 영역 높이, --kb: 키보드 등이 가리는 아래쪽 높이. (iOS는 키보드가 떠도 레이아웃 화면이 줄지 않는다)
+ */
+function useVisibleViewport() {
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const root = document.documentElement.style;
+    const update = () => {
+      root.setProperty("--vvh", vv.height + "px");
+      root.setProperty("--kb", Math.max(0, window.innerHeight - vv.height - vv.offsetTop) + "px");
+    };
+    update();
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+    return () => {
+      vv.removeEventListener("resize", update);
+      vv.removeEventListener("scroll", update);
+      root.removeProperty("--vvh");
+      root.removeProperty("--kb");
+    };
+  }, []);
+}
+
 export default function ItemSheet({ mode, item, memo, P, onClose, onSave, onDelete }) {
+  useVisibleViewport();
   return (
     <div className="sheet" role="dialog" aria-modal="true" aria-label={item ? item.n : "일정 추가"}>
       {mode === "view" ? (
@@ -48,7 +74,10 @@ function Form({ mode, item, memo, onClose, onSave, onDelete }) {
   const [err, setErr] = useState("");
   const [armed, setArmed] = useState(false);
   const nameRef = useRef(null);
-  useEffect(() => nameRef.current?.focus(), []);
+  // 터치 기기에서는 자동 포커스하지 않는다. (열자마자 키보드가 올라와 화면이 밀리는 것을 방지)
+  useEffect(() => {
+    if (window.matchMedia?.("(pointer: fine)").matches) nameRef.current?.focus();
+  }, []);
   const set = (key) => (e) => setF((x) => ({ ...x, [key]: e.target.value }));
 
   const submit = () => {
